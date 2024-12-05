@@ -1,0 +1,82 @@
+local Workspace = game:GetService("Workspace")
+
+-- Function to create the Name Tag ESP
+local function createNameTagESP(model)
+    -- Ensure the model has a part named "Base" to attach the Name Tag
+    local basePart = model:FindFirstChild("Base")
+    
+    if not basePart then
+        print("Debug: No 'Base' part found for model: " .. model.Name)
+        return -- If the model doesn't have a "Base" part, skip it
+    end
+
+    -- Create a BillboardGui to display the name above the model
+    local billboardGui = Instance.new("BillboardGui")
+    billboardGui.Adornee = basePart
+    billboardGui.Size = UDim2.new(0, 100, 0, 50)  -- Adjust the size of the name tag
+    billboardGui.StudsOffset = Vector3.new(0, 3, 0)  -- Adjust the vertical offset of the name tag
+    billboardGui.Parent = basePart  -- Attach the BillboardGui to the base part
+    billboardGui.AlwaysOnTop = true  -- Ensure the name tag is always on top of the model
+    
+    -- Create a TextLabel inside the BillboardGui to display the name
+    local textLabel = Instance.new("TextLabel")
+    textLabel.Text = model.Name  -- Set the text to the model's name
+    textLabel.Size = UDim2.new(1, 0, 1, 0)
+    textLabel.BackgroundTransparency = 1
+    textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)  -- White text color
+    textLabel.TextStrokeTransparency = 0.8  -- Add a slight stroke for visibility
+    textLabel.TextSize = 14  -- Set a reasonable text size
+    textLabel.Parent = billboardGui
+    
+    -- Optional: Debugging the TextLabel properties
+    print("Debug: Created TextLabel for model: " .. model.Name)
+end
+
+-- Function to create the name tags for all models in the "Spawned" folder
+local function createNameTagsForVehicles()
+    local vehiclesFolder = Workspace:FindFirstChild("Vehicles")
+    if not vehiclesFolder then
+        print("Debug: Vehicles folder not found!")
+        return
+    end
+    
+    local spawnedFolder = vehiclesFolder:FindFirstChild("Spawned")
+    if not spawnedFolder then
+        print("Debug: Spawned folder not found!")
+        return
+    end
+
+    -- Debugging: Print the number of models found in "Spawned"
+    print("Debug: Scanning 'Spawned' folder for models...")
+    local modelCount = 0
+
+    -- Loop through each model in the "Spawned" folder
+    for _, model in pairs(spawnedFolder:GetChildren()) do
+        -- Make sure it's a model
+        if model:IsA("Model") then
+            modelCount = modelCount + 1
+            print("Debug: Found model: " .. model.Name)
+            createNameTagESP(model)  -- Create the name tag ESP for the model
+        else
+            print("Debug: Skipping non-model child: " .. model.Name)
+        end
+    end
+
+    -- If no models are found, print a debug message
+    if modelCount == 0 then
+        print("Debug: No models found in 'Spawned' folder!")
+    end
+end
+
+-- Create name tags for existing models in the "Spawned" folder when the script runs
+createNameTagsForVehicles()
+
+-- Optionally, update when new models are added to the "Spawned" folder
+Workspace.Vehicles.Spawned.ChildAdded:Connect(function(child)
+    if child:IsA("Model") then
+        print("Debug: New model added: " .. child.Name)
+        createNameTagESP(child)  -- Create the name tag for the new model
+    else
+        print("Debug: Skipping new child (not a model): " .. child.Name)
+    end
+end)
