@@ -1,0 +1,55 @@
+local Workspace = game:GetService("Workspace")
+
+-- Function to create the Name Tag ESP
+local function createNameTagESP(model)
+    -- Ensure the model has a humanoid root part or central part to attach the Name Tag
+    local humanoidRootPart = model:FindFirstChild("HumanoidRootPart") or model:FindFirstChild("PrimaryPart")
+    
+    if not humanoidRootPart then
+        return -- If the model doesn't have a humanoidRootPart or PrimaryPart, skip it
+    end
+
+    -- Create a BillboardGui to display the name above the model
+    local billboardGui = Instance.new("BillboardGui")
+    billboardGui.Adornee = humanoidRootPart
+    billboardGui.Size = UDim2.new(0, 100, 0, 50)
+    billboardGui.StudsOffset = Vector3.new(0, 3, 0)  -- Adjust the vertical offset of the name tag
+    billboardGui.Parent = model
+    billboardGui.AlwaysOnTop = true  -- This makes the name tag always on top of the model
+    
+    -- Create a TextLabel inside the BillboardGui to display the name
+    local textLabel = Instance.new("TextLabel")
+    textLabel.Text = model.Name  -- Set the text to the model's name
+    textLabel.Size = UDim2.new(1, 0, 1, 0)
+    textLabel.BackgroundTransparency = 1
+    textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)  -- White text color
+    textLabel.TextStrokeTransparency = 0.8  -- Add a slight stroke for visibility
+    textLabel.Parent = billboardGui
+end
+
+-- Function to create the name tags for all models in the folder
+local function createNameTagsForMobs()
+    local zombiesFolder = Workspace:FindFirstChild("Zombies")
+    if not zombiesFolder then return end
+    
+    local mobsFolder = zombiesFolder:FindFirstChild("Mobs")
+    if not mobsFolder then return end
+
+    -- Loop through each model in the Mobs folder
+    for _, model in pairs(mobsFolder:GetChildren()) do
+        -- Make sure it's a model (in case there are other objects in the folder)
+        if model:IsA("Model") then
+            createNameTagESP(model)
+        end
+    end
+end
+
+-- Create name tags for existing mobs in the game when the script runs
+createNameTagsForMobs()
+
+-- Optionally, update when new mobs are added to the folder
+Workspace.Zombies.Mobs.ChildAdded:Connect(function(child)
+    if child:IsA("Model") then
+        createNameTagESP(child)
+    end
+end)
