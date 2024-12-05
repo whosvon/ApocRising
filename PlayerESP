@@ -1,0 +1,66 @@
+local Players = game:GetService("Players")
+
+-- Function to create the Name Tag ESP for players
+local function createNameTagESP(player)
+    -- Ensure the player has a character and humanoid root part to attach the Name Tag
+    local character = player.Character
+    if not character then
+        return -- Skip if the player doesn't have a character
+    end
+
+    local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+    
+    if not humanoidRootPart then
+        return -- If the character doesn't have a humanoidRootPart, skip it
+    end
+
+    -- Create a BillboardGui to display the name above the character
+    local billboardGui = Instance.new("BillboardGui")
+    billboardGui.Adornee = humanoidRootPart
+    billboardGui.Size = UDim2.new(0, 100, 0, 50)
+    billboardGui.StudsOffset = Vector3.new(0, 3, 0)  -- Adjust the vertical offset of the name tag
+    billboardGui.Parent = character
+    billboardGui.AlwaysOnTop = true  -- This makes the name tag always on top of the character
+    
+    -- Create a TextLabel inside the BillboardGui to display the name
+    local textLabel = Instance.new("TextLabel")
+    textLabel.Text = player.Name  -- Set the text to the player's name
+    textLabel.Size = UDim2.new(1, 0, 1, 0)
+    textLabel.BackgroundTransparency = 1
+    textLabel.TextColor3 = Color3.fromRGB(255, 0, 0)  -- Red text color
+    textLabel.TextStrokeTransparency = 0.8  -- Add a slight stroke for visibility
+    textLabel.Parent = billboardGui
+end
+
+-- Function to create the name tags for all players in the game
+local function createNameTagsForPlayers()
+    -- Loop through each player in the Players service
+    for _, player in pairs(Players:GetPlayers()) do
+        -- Make sure the player has a character before creating the name tag
+        if player.Character then
+            createNameTagESP(player)
+        end
+    end
+end
+
+-- Create name tags for existing players in the game when the script runs
+createNameTagsForPlayers()
+
+-- Optionally, update when new players join the game
+Players.PlayerAdded:Connect(function(player)
+    player.CharacterAdded:Connect(function()
+        createNameTagESP(player)
+    end)
+end)
+
+-- Optionally, remove name tags when players leave the game
+Players.PlayerRemoving:Connect(function(player)
+    -- If desired, clean up the name tag when the player leaves
+    local character = player.Character
+    if character then
+        local billboardGui = character:FindFirstChildOfClass("BillboardGui")
+        if billboardGui then
+            billboardGui:Destroy()
+        end
+    end
+end)
