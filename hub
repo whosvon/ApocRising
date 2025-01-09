@@ -1,0 +1,52 @@
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+Rayfield:Notify({
+   Title = "Welcome!",
+   Content = "Apoc Rising 2 - Whosvon",
+   Duration = 6.5,
+   Image = 4483362458,
+})
+
+local Window = Rayfield:CreateWindow({
+    Name = "Apoc-2",
+    Icon = 0,
+    LoadingTitle = "Enjoy!",
+    LoadingSubtitle = "by PoppinTums",
+    Theme = "Amethyst",
+    DisableRayfieldPrompts = false,
+    DisableBuildWarnings = false,
+    ConfigurationSaving = {
+        Enabled = true,
+        FolderName = nil,
+        FileName = "config"
+    },
+    Discord = {
+        Enabled = true,
+        Invite = "noinvitelink",
+        RememberJoins = true
+    },
+    KeySystem = true,
+    KeySettings = {
+        Title = "Apoc-2",
+        Subtitle = "Have Fun!",
+        Note = "Key is Hello",
+        FileName = "Key",
+        SaveKey = true,
+        GrabKeyFromSite = false,
+        Key = {"Hello"}
+    }
+})
+
+local MainTab = Window:CreateTab("Main", 4483362458)
+local MiscTab = Window:CreateTab("Misc", 4483362458)
+local CredsTab = Window:CreateTab("Credits", 4483362458)
+
+local Toggle = Main:CreateToggle({
+   Name = "Player ESP",
+   CurrentValue = true,
+   Flag = "ToggleESP", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+   -- The function that takes place when the toggle is pressed
+   -- The variable (Value) is a boolean on whether the toggle is true or false
+   end,
+})
